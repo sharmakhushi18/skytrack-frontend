@@ -1,70 +1,108 @@
-# Getting Started with Create React App
+# ✈️ Flight Delay Alert System — Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based dashboard for the Flight Delay Alert System, consuming a Spring Boot REST API. Passengers get real-time alerts when flights are delayed or cancelled.
 
-## Available Scripts
+> Built by **Khushi Sharma** | Full Stack Developer | LNCT Bhopal
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🔗 Backend Repository
+[flight-delay-alert-api](https://github.com/sharmakhushi18/flight-delay-alert-api) — Spring Boot + MySQL + JPA
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Features
 
-### `npm test`
+- View all flights with live status
+- Color-coded status badges — ON_TIME, DELAYED, CANCELLED, BOARDING, DEPARTED
+- Add new flights
+- Update flight status (triggers auto alerts)
+- Register passengers
+- Book flight seats
+- View passenger delay/cancellation alerts
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠️ Tech Stack
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Technology | Usage |
+|------------|-------|
+| React 18 | Frontend framework |
+| JavaScript ES6+ | Core language |
+| CSS3 | Styling |
+| Fetch API | REST API integration |
+| Spring Boot | Backend (port 8080) |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📸 Screenshots
 
-### `npm run eject`
+### Flights Dashboard
+![Flights](screenshots/flights-tab.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Book Flight
+![Book](screenshots/book-tab.png)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Passenger Alerts
+![Alerts](screenshots/alerts-tab.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## ⚙️ How to Run Locally
 
-## Learn More
+### Prerequisites
+- Node.js v16+
+- Spring Boot backend running on `http://localhost:8080`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Steps
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+# Clone the repository
+git clone https://github.com/sharmakhushi18/flight-delay-frontend.git
 
-### Code Splitting
+# Navigate to project
+cd flight-delay-frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# Install dependencies
+npm install
 
-### Analyzing the Bundle Size
+# Start the app
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+App runs at: `http://localhost:3000`
 
-### Making a Progressive Web App
+> Make sure backend is running at `http://localhost:8080` before starting frontend.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 🗂️ Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+src/
+├── App.js        ← All components (Flights, Book, Alerts)
+├── App.css       ← Dark theme styling
+└── index.js      ← Entry point
+```
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🔄 How It Works
 
-### `npm run build` fails to minify
+```
+User opens browser (localhost:3000)
+        ↓
+React fetches data from Spring Boot API (localhost:8080)
+        ↓
+Flights, bookings, alerts displayed in real-time
+        ↓
+Status update → Backend auto-generates passenger alerts
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 👩‍💻 Author
+
+**Khushi Sharma**
+- GitHub: [@sharmakhushi18](https://github.com/sharmakhushi18)
+- Final Year ECE | LNCT Bhopal
