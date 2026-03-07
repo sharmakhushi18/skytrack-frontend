@@ -1,38 +1,191 @@
-.App {
-  text-align: center;
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  background:#060910;
+  color:#f0f6fc;
+  font-family:'Segoe UI',sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 32px;
+  background:rgba(13,17,23,0.9);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  position:sticky;
+  top:0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.navbar h1{font-size:1.2rem;}
+
+.tabs{display:flex;gap:8px;}
+
+.tabs button{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.1);
+  color:#7d8590;
+  padding:8px 20px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:0.9rem;
+  transition:all 0.2s;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.tabs button.active,
+.tabs button:hover{
+  background:#00ff9d;
+  color:#060910;
+  border-color:#00ff9d;
+  font-weight:600;
 }
 
-.App-link {
-  color: #61dafb;
+main{padding:32px;max-width:1100px;margin:0 auto;}
+
+.card{
+  background:#0d1117;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px;
+  padding:24px;
+  margin-bottom:16px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h2{margin-bottom:20px;font-size:1.2rem;}
+
+.form-group{margin-bottom:14px;}
+
+.form-group label{
+  display:block;
+  font-size:0.82rem;
+  color:#7d8590;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  background:#161b22;
+  border:1px solid rgba(255,255,255,0.08);
+  color:#f0f6fc;
+  padding:10px 14px;
+  border-radius:6px;
+  font-size:0.9rem;
+}
+
+.btn{
+  background:#00ff9d;
+  color:#060910;
+  border:none;
+  padding:10px 24px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:0.9rem;
+  transition:all 0.2s;
+}
+
+.btn:hover{background:#00e68a;}
+
+.btn-danger{
+  background:transparent;
+  border:1px solid #ff4d4d;
+  color:#ff4d4d;
+  padding:6px 14px;
+  border-radius:4px;
+  cursor:pointer;
+  font-size:0.8rem;
+}
+
+.flight-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+}
+
+.flight-card{
+  background:#161b22;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;
+  padding:20px;
+  transition:all 0.25s ease;
+}
+
+.flight-card:hover{
+  border-color:rgba(0,255,157,0.3);
+  transform:translateY(-4px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+
+.status{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:3px;
+  font-size:0.75rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.status.ON_TIME{background:rgba(0,255,157,0.1);color:#00ff9d;}
+.status.DELAYED{background:rgba(255,165,0,0.1);color:#ffa500;}
+.status.CANCELLED{background:rgba(255,77,77,0.1);color:#ff4d4d;}
+.status.BOARDING{background:rgba(14,165,233,0.1);color:#0ea5e9;}
+.status.DEPARTED{background:rgba(125,133,144,0.1);color:#7d8590;}
+
+.flight-route{font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.flight-info{font-size:0.82rem;color:#7d8590;margin-bottom:4px;}
+
+.alert-item{
+  background:rgba(255,165,0,0.05);
+  border:1px solid rgba(255,165,0,0.15);
+  border-radius:8px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.alert-msg{font-size:0.9rem;margin-bottom:6px;}
+.alert-time{font-size:0.75rem;color:#7d8590;}
+
+.success{color:#00ff9d;margin-top:10px;font-size:0.85rem;}
+.error{color:#ff4d4d;margin-top:10px;font-size:0.85rem;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+.skeleton{
+  background:#1f2630;
+  height:120px;
+  border-radius:8px;
+  animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity:0.5;}
+  50%{opacity:1;}
+  100%{opacity:0.5;}
+}
+
+.toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#00ff9d;
+  color:#060910;
+  padding:12px 20px;
+  border-radius:6px;
+  font-weight:600;
+  box-shadow:0 5px 20px rgba(0,0,0,0.3);
+  animation:toastIn 0.3s ease;
+}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+@media(max-width:768px){
+  .navbar{flex-direction:column;gap:10px;}
+  .tabs{flex-wrap:wrap;justify-content:center;}
+  main{padding:16px;}
+  .flight-grid{grid-template-columns:1fr;}
+  .flight-card{padding:16px;}
+  .grid-2{grid-template-columns:1fr;}
 }
