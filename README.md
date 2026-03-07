@@ -35,10 +35,16 @@ A React-based dashboard for the Flight Delay Alert System, consuming a Spring Bo
 
 ---
 
+## 📸 Screenshots
+
+### Flights Dashboard
 ![Flights](flights-tab.png)
+
+### Book Flight
 ![Book](book-tab.png)
+
+### Passenger Alerts
 ![Alerts](alerts-tab.png)
----
 
 ## ⚙️ How to Run Locally
 
