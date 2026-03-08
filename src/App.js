@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const API = "http://localhost:8080";
+const API = "https://flight-delay-alert-api.onrender.com";
 
 function App() {
   const [flights, setFlights] = useState([]);
