@@ -1,25 +1,32 @@
-# ✈️ Flight Delay Alert System — Frontend
+# ✈️ SkyTrack — Flight Delay Alert System
 
-A React-based dashboard for the Flight Delay Alert System, consuming a Spring Boot REST API. Passengers get real-time alerts when flights are delayed or cancelled.
+A production-grade React dashboard for real-time flight tracking and passenger delay alerts, consuming a Spring Boot REST API.
 
 > Built by **Khushi Sharma** | Full Stack Developer | LNCT Bhopal
 
 ---
 
-## 🔗 Backend Repository
-[flight-delay-alert-api](https://github.com/sharmakhushi18/flight-delay-alert-api) — Spring Boot + MySQL + JPA
+## 🔗 Repositories
+
+| Layer | Repository |
+|-------|-----------|
+| Frontend | [skytrack-frontend](https://github.com/sharmakhushi18/skytrack-frontend) |
+| Backend | [flight-delay-alert-api](https://github.com/sharmakhushi18/flight-delay-alert-api) — Spring Boot + MySQL + JPA |
 
 ---
 
 ## 🚀 Features
 
-- View all flights with live status
-- Color-coded status badges — ON_TIME, DELAYED, CANCELLED, BOARDING, DEPARTED
-- Add new flights
-- Update flight status (triggers auto alerts)
-- Register passengers
-- Book flight seats
-- View passenger delay/cancellation alerts
+- 📊 **Live Stats Dashboard** — Total, On Time, Delayed, Cancelled flight counts
+- ✈️ **Flight Management** — Add flights, update status, triggers auto alerts
+- 🔍 **Search & Filter** — Filter by flight number, route, or status
+- 🎫 **Smart Booking** — Only bookable flights selectable (ON_TIME, DELAYED, BOARDING)
+- 👤 **Passenger Registration** — With email & seat format validation
+- 🔔 **Real-time Alerts** — Passenger delay/cancellation notifications
+- ⟳ **Auto Refresh** — Flights update every 30 seconds silently
+- 🍞 **Toast Notifications** — Success, error, info feedback
+- 💀 **Skeleton Loading** — Shimmer cards while data loads
+- 📱 **Fully Responsive** — Works on mobile & desktop
 
 ---
 
@@ -28,23 +35,33 @@ A React-based dashboard for the Flight Delay Alert System, consuming a Spring Bo
 | Technology | Usage |
 |------------|-------|
 | React 18 | Frontend framework |
-| JavaScript ES6+ | Core language |
-| CSS3 | Styling |
+| JavaScript ES6+ | Hooks, async/await, modules |
+| CSS3 | Dark theme, animations, glassmorphism |
 | Fetch API | REST API integration |
 | Spring Boot | Backend (port 8080) |
 
 ---
 
-## 📸 Screenshots
+## 🗂️ Project Structure
 
-### Flights Dashboard
-![Flights](flights-tab.png)
+```
+src/
+├── components/
+│   ├── Navbar.js        ← Header, tabs, refresh button
+│   ├── FlightList.js    ← Flight cards, add/update flight
+│   ├── BookingForm.js   ← Register passenger, book flight
+│   ├── AlertList.js     ← Passenger alert lookup
+│   └── StatusBadge.js   ← Reusable status pill component
+├── services/
+│   └── api.js           ← All API calls, base URL config
+├── utils/
+│   └── helpers.js       ← formatDate, STATUS_META, calcStats
+├── App.js               ← Root, state, auto-refresh, toasts
+├── App.css              ← Full dark theme styling
+└── index.js             ← Entry point
+```
 
-### Book Flight
-![Book](book-tab.png)
-
-### Passenger Alerts
-![Alerts](alerts-tab.png)
+---
 
 ## ⚙️ How to Run Locally
 
@@ -56,10 +73,10 @@ A React-based dashboard for the Flight Delay Alert System, consuming a Spring Bo
 
 ```bash
 # Clone the repository
-git clone https://github.com/sharmakhushi18/flight-delay-frontend.git
+git clone https://github.com/sharmakhushi18/skytrack-frontend.git
 
 # Navigate to project
-cd flight-delay-frontend
+cd skytrack-frontend
 
 # Install dependencies
 npm install
@@ -74,28 +91,45 @@ App runs at: `http://localhost:3000`
 
 ---
 
-## 🗂️ Project Structure
-
-```
-src/
-├── App.js        ← All components (Flights, Book, Alerts)
-├── App.css       ← Dark theme styling
-└── index.js      ← Entry point
-```
-
----
-
 ## 🔄 How It Works
 
 ```
 User opens browser (localhost:3000)
         ↓
-React fetches data from Spring Boot API (localhost:8080)
+React fetches flights from Spring Boot API
         ↓
-Flights, bookings, alerts displayed in real-time
+Stats, flight cards, search/filter rendered
+        ↓
+Auto-refresh every 30 seconds (silent)
         ↓
 Status update → Backend auto-generates passenger alerts
+        ↓
+Passenger checks alerts via Passenger ID
 ```
+
+---
+
+## 🧠 Architecture Decisions
+
+- **Component-based structure** — Each feature is an isolated, reusable component
+- **Service layer** (`api.js`) — All fetch calls centralized, easy to swap base URL
+- **Utility layer** (`helpers.js`) — `STATUS_META`, `BOOKABLE_STATUSES`, `formatDate` reused across components
+- **Whitelist booking filter** — `["ON_TIME", "DELAYED", "BOARDING"]` — scalable, not exclusion-based
+- **Separate loading states** — `registerLoading` and `bookingLoading` prevent UI conflicts
+- **Silent auto-refresh** — No loading flash on background updates
+
+---
+
+## 📸 Screenshots
+
+### Flights Dashboard
+![Flights](flights-tab.png)
+
+### Book Flight
+![Book](book-tab.png)
+
+### Passenger Alerts
+![Alerts](alerts-tab.png)
 
 ---
 
