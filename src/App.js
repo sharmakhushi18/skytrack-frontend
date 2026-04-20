@@ -70,14 +70,157 @@ function FlightSkeleton() {
   );
 }
 
+// ── Login Page ───────────────────────────────────────────────────────────────
+function LoginPage({ onLogin, showToast }) {
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [regForm, setRegForm] = useState({ username: "", password: "" });
+  const [tab, setTab] = useState("login");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleLogin = async () => {
+    if (!form.username || !form.password) {
+      showToast("Please enter username and password", "error"); return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        onLogin(data.token);
+        showToast("Login successful! Welcome back ✈");
+      } else {
+        showToast("Invalid username or password", "error");
+      }
+    } catch {
+      showToast("Login failed. Try again", "error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    if (!regForm.username || !regForm.password) {
+      showToast("Please fill all fields", "error"); return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(regForm),
+      });
+      if (res.ok) {
+        showToast("Registered successfully! Please login");
+        setTab("login");
+        setRegForm({ username: "", password: "" });
+      } else {
+        showToast("Username already exists", "error");
+      }
+    } catch {
+      showToast("Registration failed. Try again", "error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="login-page">
+      <div className="login-card">
+        <div className="login-header">
+          <div className="brand-icon" style={{ fontSize: "2rem", marginBottom: "8px" }}>✈</div>
+          <div className="brand-name" style={{ fontSize: "1.8rem" }}>SkyTrack</div>
+          <div className="brand-sub">Flight Delay Alert System</div>
+        </div>
+
+        <div className="inner-tabs" style={{ marginBottom: "24px" }}>
+          <button className={`inner-tab ${tab === "login" ? "active" : ""}`}
+            onClick={() => setTab("login")}>Login</button>
+          <button className={`inner-tab ${tab === "register" ? "active" : ""}`}
+            onClick={() => setTab("register")}>Register</button>
+        </div>
+
+        {tab === "login" && (
+          <>
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                value={form.username}
+                placeholder="Enter username"
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                value={form.password}
+                placeholder="Enter password"
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              />
+            </div>
+            <button className="btn btn-primary" onClick={handleLogin} disabled={submitting}
+              style={{ width: "100%" }}>
+              {submitting ? <span className="spinner" /> : "Login"}
+            </button>
+          </>
+        )}
+
+        {tab === "register" && (
+          <>
+            <div className="form-group">
+              <label>Username</label>
+              <input
+                value={regForm.username}
+                placeholder="Choose a username"
+                onChange={(e) => setRegForm({ ...regForm, username: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                value={regForm.password}
+                placeholder="Choose a password"
+                onChange={(e) => setRegForm({ ...regForm, password: e.target.value })}
+              />
+            </div>
+            <button className="btn btn-primary" onClick={handleRegister} disabled={submitting}
+              style={{ width: "100%" }}>
+              {submitting ? <span className="spinner" /> : "Register"}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── App Root ─────────────────────────────────────────────────────────────────
 function App() {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("flights");
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("jwt_token") || null);
   const { toasts, show: showToast } = useToast();
   const intervalRef = useRef(null);
+
+  const handleLogin = (newToken) => {
+    setToken(newToken);
+    localStorage.setItem("jwt_token", newToken);
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    localStorage.removeItem("jwt_token");
+    showToast("Logged out successfully", "info");
+  };
 
   const fetchFlights = useCallback(async (silent = false) => {
     try {
@@ -99,6 +242,16 @@ function App() {
     intervalRef.current = setInterval(() => fetchFlights(true), 30000);
     return () => clearInterval(intervalRef.current);
   }, [fetchFlights]);
+
+  // Show login page if not logged in
+  if (!token) {
+    return (
+      <div className="app">
+        <LoginPage onLogin={handleLogin} showToast={showToast} />
+        <ToastContainer toasts={toasts} />
+      </div>
+    );
+  }
 
   const tabs = [
     { id: "flights", label: "Flights", icon: "✈" },
@@ -136,18 +289,21 @@ function App() {
               Updated {lastUpdated.toLocaleTimeString()}
             </span>
           )}
-          <button className="refresh-btn" onClick={() => fetchFlights()}>
-            ↻
+          <button className="refresh-btn" onClick={() => fetchFlights()}>↻</button>
+          {/* Logout Button */}
+          <button className="btn btn-logout" onClick={handleLogout}
+            style={{ marginLeft: "8px", padding: "6px 14px", fontSize: "0.8rem" }}>
+            Logout
           </button>
         </div>
       </header>
 
       <main>
         {activeTab === "flights" && (
-          <FlightsTab flights={flights} loading={loading} refresh={() => fetchFlights()} showToast={showToast} />
+          <FlightsTab flights={flights} loading={loading} refresh={() => fetchFlights()} showToast={showToast} token={token} />
         )}
         {activeTab === "book" && (
-          <BookTab flights={flights} showToast={showToast} />
+          <BookTab flights={flights} showToast={showToast} token={token} />
         )}
         {activeTab === "alerts" && (
           <AlertsTab showToast={showToast} />
@@ -160,7 +316,7 @@ function App() {
 }
 
 // ── Flights Tab ───────────────────────────────────────────────────────────────
-function FlightsTab({ flights, loading, refresh, showToast }) {
+function FlightsTab({ flights, loading, refresh, showToast, token }) {
   const [form, setForm] = useState({
     flightNumber: "", source: "", destination: "",
     departureTime: "", totalSeats: "", availableSeats: "",
@@ -198,7 +354,10 @@ function FlightsTab({ flights, loading, refresh, showToast }) {
     try {
       const res = await fetch(`${API}/flights`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,   // ✅ JWT token
+        },
         body: JSON.stringify({
           ...form,
           totalSeats: Number(form.totalSeats),
@@ -219,7 +378,10 @@ function FlightsTab({ flights, loading, refresh, showToast }) {
     try {
       const res = await fetch(`${API}/flights/${updateId}/status`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,   // ✅ JWT token
+        },
         body: JSON.stringify({ status: newStatus, delayMinutes: Number(delayMinutes) }),
       });
       if (res.ok) { showToast("Flight status updated"); refresh(); }
@@ -235,7 +397,6 @@ function FlightsTab({ flights, loading, refresh, showToast }) {
 
   return (
     <div className="tab-content">
-      {/* Stats Row */}
       <div className="stats-row">
         <StatCard label="Total Flights" value={stats.total}     accent="#7c8cf8" />
         <StatCard label="On Time"       value={stats.onTime}    accent="#00d97e" />
@@ -243,7 +404,6 @@ function FlightsTab({ flights, loading, refresh, showToast }) {
         <StatCard label="Cancelled"     value={stats.cancelled} accent="#f25c6e" />
       </div>
 
-      {/* Admin Panel */}
       <div className="section-header">
         <h2 className="section-title">Flight Management</h2>
       </div>
@@ -319,7 +479,6 @@ function FlightsTab({ flights, loading, refresh, showToast }) {
         </div>
       </div>
 
-      {/* Flight List */}
       <div className="section-header" style={{ marginTop: "32px" }}>
         <h2 className="section-title">
           All Flights
@@ -410,7 +569,7 @@ function FlightCard({ flight: f }) {
 }
 
 // ── Book Tab ──────────────────────────────────────────────────────────────────
-function BookTab({ flights, showToast }) {
+function BookTab({ flights, showToast, token }) {
   const [passengers, setPassengers] = useState([]);
   const [pForm, setPForm] = useState({ name: "", email: "", phone: "", passportNumber: "" });
   const [bForm, setBForm] = useState({ flightId: "", passengerId: "", seatNumber: "" });
@@ -418,8 +577,10 @@ function BookTab({ flights, showToast }) {
   const [tab, setTab] = useState("register");
 
   useEffect(() => {
-    fetch(`${API}/passengers`).then((r) => r.json()).then(setPassengers).catch(() => {});
-  }, []);
+    fetch(`${API}/passengers`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    }).then((r) => r.json()).then(setPassengers).catch(() => {});
+  }, [token]);
 
   const addPassenger = async () => {
     if (!pForm.name || !pForm.email) { showToast("Name and email are required", "error"); return; }
@@ -427,12 +588,17 @@ function BookTab({ flights, showToast }) {
     try {
       const res = await fetch(`${API}/passengers`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,   // ✅ JWT token
+        },
         body: JSON.stringify(pForm),
       });
       if (res.ok) {
         showToast("Passenger registered successfully");
-        const updated = await fetch(`${API}/passengers`).then((r) => r.json());
+        const updated = await fetch(`${API}/passengers`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        }).then((r) => r.json());
         setPassengers(updated);
         setPForm({ name: "", email: "", phone: "", passportNumber: "" });
       } else { showToast("Error registering passenger", "error"); }
@@ -453,7 +619,10 @@ function BookTab({ flights, showToast }) {
     try {
       const res = await fetch(`${API}/bookings`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,   // ✅ JWT token
+        },
         body: JSON.stringify({
           flightId: Number(bForm.flightId),
           passengerId: Number(bForm.passengerId),
@@ -513,20 +682,17 @@ function BookTab({ flights, showToast }) {
             <select value={bForm.flightId}
               onChange={(e) => setBForm({ ...bForm, flightId: e.target.value })}>
               <option value="">— Choose a flight —</option>
-              {(() => {
-                const BOOKABLE = ["ON_TIME", "DELAYED", "BOARDING"];
-                return flights.map((f) => {
-                  const bookable = BOOKABLE.includes(f.status);
-                  return (
-                    <option key={f.id} value={f.id} disabled={!bookable}>
-                      {f.flightNumber} · {f.source} → {f.destination}
-                      {bookable
-                        ? ` · ${f.availableSeats} seats left`
-                        : ` (${STATUS_META[f.status]?.label || f.status})`}
-                    </option>
-                  );
-                });
-              })()}
+              {flights.map((f) => {
+                const bookable = BOOKABLE.includes(f.status);
+                return (
+                  <option key={f.id} value={f.id} disabled={!bookable}>
+                    {f.flightNumber} · {f.source} → {f.destination}
+                    {bookable
+                      ? ` · ${f.availableSeats} seats left`
+                      : ` (${STATUS_META[f.status]?.label || f.status})`}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <div className="form-group">
